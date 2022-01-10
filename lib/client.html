@@ -1,0 +1,27 @@
+<script type="text/html" data-template-name="kobold-client">
+    <div class="form-row">
+        <label for="node-config-input-token" style="width: 25%"><i class="icon-bookmark"></i> Token</label>
+        <input type="text" id="node-config-input-token" style="width: 70%;">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name" style="width: 25%"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-config-input-name" style="width: 70%;">
+    </div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    RED.nodes.registerType("kobold-client", {
+        defaults: {
+            token: {value: ""},
+        },
+        category: 'config',
+        label: function() {
+            return this.name || this.token && `${this.token.substring(0, 10)}...` || false;
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic":"";
+        },
+    });
+})();
+</script>

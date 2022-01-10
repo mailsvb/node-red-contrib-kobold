@@ -1,0 +1,59 @@
+<script type="text/html" data-template-name="kobold-state">
+    <div class="form-row" id="websocket-server-row">
+        <label for="node-input-client"><i class="fa fa-server"></i> Client</label>
+        <input type="text" id="node-input-client">
+    </div>
+    <div class="form-row">
+        <label for="node-input-robotid"><i class="fa fa-empire"></i> Robot</label>
+        <select id="node-input-robotid">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-label"><i class="icon-bookmark"></i> Label</label>
+        <input type="text" id="node-input-label">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="kobold-state">
+    <p>Query the state of a Vorwerk Kobold VR300 vacuum cleaner.</p>
+    <p>Select the vacuum cleaner from the dropdown list.</p>
+    <p>The current state will be provided in <code>msg.payload</code></p>
+</script>
+
+
+<script type="text/javascript">
+(function() {
+    RED.nodes.registerType('kobold-state', {
+        defaults: {
+            client: {type: 'kobold-client'},
+            robotid: {value:''},
+            label: {value: '', required: false},
+        },
+        category: 'Kobold',
+        color:"rgb(0, 167, 96)",
+        icon: "vr300.png",
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'State',
+        label: function() {
+            return this.label || 'Robot state';
+        },
+        labelStyle: function() {
+            return this.label ? 'node_label_italic' : '';
+        },
+        oneditprepare: function() {
+            const currentSerial = this.robotid;
+            $('#node-input-client').change(function(){
+                $.getJSON(`getavailablerobots/${$("#node-input-client").val()}`,function(data) {
+                    $('#node-input-robotid').html('')
+                    if (data && data.robots) {
+                        for(const robot in data.robots) {
+                            $('#node-input-robotid').append(`<option value="${data.robots[robot].serial}" ${data.robots[robot].serial === currentSerial ? 'selected' : ''}>${data.robots[robot].name}</option>`);
+                        }
+                    }
+                });
+            });
+        }
+    });
+})();
+</script>
